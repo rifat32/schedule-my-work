@@ -15,6 +15,7 @@ class CreateWorksTable extends Migration
     {
         Schema::create('works', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger("project_id");
             $table->dateTime("start_time");
             $table->dateTime("stop_time")->nullable();
             $table->string("reason_of_stop")->nullable();

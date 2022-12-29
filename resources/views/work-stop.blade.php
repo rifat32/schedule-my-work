@@ -9,6 +9,7 @@ $interval = $datetime1->diff($datetime2);
 @endphp
 
 <div class="container">
+    <h1>{{$work->project->name}}</h1>
     <h4 class="text-center">Start Time: {{$datetime1->format('Y/m/d H:i:s')}} </h4>
     <h2 class="text-center" >Time: {{$interval->format('%H hours %i minutes %s seconds')}} </h2>
     <form  action="{{route('works.stop')}}" method="POST">

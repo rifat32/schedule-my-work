@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Models\Work;
 use Illuminate\Http\Request;
 
@@ -9,11 +10,16 @@ class WorkController extends Controller
 {
 
     public function index(Request $request) {
+        $query = Work::whereBetween("start_time",[$request->start_date,$request->stop_date]);
+        if($request->project_id) {
+            $query = $query->where([
+                "project_id" => $request->project_id
+            ]);
+        }
+        $works =  $query->get();
 
-        $works = Work::whereBetween("start_time",[$request->start_date,$request->stop_date])
-        ->get();
-
-        return view("works",["works" => $works,"start_date" => $request->start_date,"stop_date" => $request->stop_date]);
+        $projects = Project::get();
+        return view("works",["works" => $works,"start_date" => $request->start_date,"stop_date" => $request->stop_date,"projects" => $projects,"project_id" => $request->project_id]);
 
     }
 
@@ -26,8 +32,8 @@ class WorkController extends Controller
        if($work) {
         return view("work-stop",["work"=>$work]);
        }
-
-       return view("work-start");
+       $projects = Project::get();
+       return view("work-start",compact("projects"));
     }
 
     public function store(Request $request) {
@@ -39,8 +45,11 @@ class WorkController extends Controller
             return redirect()->route("works.start");
            }
 
+
+
         $work = Work::create([
-            "start_time" => now()
+            "start_time" => now(),
+            "project_id" => $request->project_id
         ]);
 
             return view("work-stop",["work"=>$work]);
